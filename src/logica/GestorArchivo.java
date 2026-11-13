@@ -9,7 +9,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
-
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import modelo.Conexion;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -202,4 +205,53 @@ public class GestorArchivo {
         }
         return resultado;
     }
-}
+
+    /**
+     * Escribe en un archivo de conexiones, identico en formato al de ingreso, con las modificaciones que haya hecho el aplicativo
+     * @param archivo donde cargar la informacion
+     * @param grafo de donde saca la informacion
+     * @throws IOException si no se logra abrir el archivo
+     */
+    public void guardarConexiones(File archivo, Grafo grafo) throws IOException {
+        Lista<Estacion> estaciones = grafo.obtenerEstaciones();
+        try (BufferedWriter escritor = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(archivo), StandardCharsets.UTF_8))) {
+            escritor.write("Estacion_Origen,Estacion_Destino,Tiempo_Minutos");
+            escritor.newLine();
+            for (int i = 0; i < estaciones.getTamano(); i++) {
+                Estacion origen = estaciones.obtener(i);
+                for (int j = 0; j < origen.getConexiones().getTamano(); j++) {
+                    Conexion c = origen.getConexiones().obtener(j);
+                    Estacion destino = c.getDestino();
+                    if (origen.getId().compareTo(destino.getId()) < 0) {
+                        escritor.write(origen.getId() + "," + destino.getId() + "," + c.getTiempo());
+                        escritor.newLine();
+                    }
+
+                }
+            }
+        }
+
+    }
+
+    /**
+     * Escribe en un archivo de estaciones, identico en formato al de ingreso, con las modificaciones que haya hecho el aplicativo
+     * @param archivo donde cargar la informacion
+     * @param grafo de donde saca la informacion
+     * @throws IOException si no se logra abrir el archivo
+     */
+    public void guardarEstaciones(File archivo, Grafo grafo) throws IOException {
+        Lista<Estacion> estaciones = grafo.obtenerEstaciones();
+        try (BufferedWriter escritor = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(archivo), StandardCharsets.UTF_8))) {
+            escritor.write("ID_Estacion,Nombre,Linea,Zona,Capacidad_Pasajeros_Hora");
+            escritor.newLine();
+            for(int i = 0; i < estaciones.getTamano(); i++){
+                Estacion e = estaciones.obtener(i);
+                if(e.getNombre() == null){
+                    continue;
+                }
+                escritor.write(e.getId()+","+e.getNombre()+","+e.getLinea()+","+e.getZona()+","+e.getCapacidad());
+                escritor.newLine();                                      
+            }
+        }
+    }
+    }
