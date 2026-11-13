@@ -62,17 +62,16 @@ public class Grafo {
      * @param idA id de la estacion 1
      * @param idB id de la estacion 2
      * @param tiempo entre ambas
-     * @return true si logra agregarse
      * @throws IllegalArgumentException estacion 1 o 2 no existe, iguales, ya
      * tienen conexion o tiempo es menor o igual a 0
      */
-    public boolean agregarConexion(String idA, String idB, int tiempo) {
-        Estacion A = buscarEstacion(idA);
-        Estacion B = buscarEstacion(idB);
-        if (A == null) {
+    public void agregarConexion(String idA, String idB, int tiempo) {
+        Estacion a = buscarEstacion(idA);
+        Estacion b = buscarEstacion(idB);
+        if (a == null) {
             throw new IllegalArgumentException("La estacion: " + idA + " no existe");
         }
-        if (B == null) {
+        if (b == null) {
             throw new IllegalArgumentException("La estacion: " + idB + " no existe");
         }
         if (idA.equals(idB)) {
@@ -81,12 +80,11 @@ public class Grafo {
         if (tiempo <= 0) {
             throw new IllegalArgumentException("El tiempo debe ser mayor que 0");
         }
-        if (A.tieneConexionHacia(B)) {
+        if (a.tieneConexionHacia(b)) {
             throw new IllegalArgumentException("Ya existe la conexion");
         }
-        A.agregarConexion(new Conexion(B, tiempo));
-        B.agregarConexion(new Conexion(A, tiempo));
-        return true;
+        a.agregarConexion(new Conexion(b, tiempo));
+        b.agregarConexion(new Conexion(a, tiempo));
     }
 
     /**
@@ -97,16 +95,16 @@ public class Grafo {
      * @return true si logra quitarlo
      */
     public boolean eliminarConexion(String idA, String idB) {
-        Estacion A = buscarEstacion(idA);
-        Estacion B = buscarEstacion(idB);
-        if (A == null) {
+        Estacion a = buscarEstacion(idA);
+        Estacion b = buscarEstacion(idB);
+        if (a == null) {
             return false;
         }
-        if (B == null) {
+        if (b == null) {
             return false;
         }
-        boolean resultadoQuitar = A.eliminarConexionHacia(B);
-        B.eliminarConexionHacia(A);
+        boolean resultadoQuitar = a.eliminarConexionHacia(b);
+        b.eliminarConexionHacia(a);
         return resultadoQuitar;
     }
 
@@ -117,13 +115,13 @@ public class Grafo {
      * @return true si se elimina, false si hay error
      */
     public boolean eliminarEstacion(String id) {
-        Estacion E = buscarEstacion(id);
-        if (E == null) {
+        Estacion e = buscarEstacion(id);
+        if (e == null) {
             return false;
         }
-        for (int i = 0; i < E.getConexiones().getTamano(); i++) {
-            Conexion conexionActual = E.getConexiones().obtener(i);
-            conexionActual.getDestino().eliminarConexionHacia(E);
+        for (int i = 0; i < e.getConexiones().getTamano(); i++) {
+            Conexion conexionActual = e.getConexiones().obtener(i);
+            conexionActual.getDestino().eliminarConexionHacia(e);
         }
         estaciones.eliminar(id);
         return true;
@@ -144,7 +142,7 @@ public class Grafo {
      * @return lista nueva de todas las estaciones
      */
     public Lista<Estacion> obtenerEstaciones() {
-        Lista<Estacion> Todos = estaciones.obtenerTodos();
-        return Todos;
+        Lista<Estacion> todos = estaciones.obtenerTodos();
+        return todos;
     }
 }
