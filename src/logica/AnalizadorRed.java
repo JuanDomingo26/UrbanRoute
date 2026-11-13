@@ -48,7 +48,7 @@ public class AnalizadorRed {
     /**
      * Metodo privado para hacer el recorrido de identificacion de subredes
      * @param inicio punto de inicio para analizar
-     * @param visitadas lista de las ya visitadas
+     * @param visitadas TablaHash de las ya visitadas
      * @return una subred
      */
     private Lista<Estacion> recorrerDesde(Estacion inicio, TablaHash<Estacion> visitadas) {
@@ -98,7 +98,8 @@ public class AnalizadorRed {
      * Calcula la ruta mas rapida para llegar entre dos puntos
      * @param idOrigen inicio de la ruta
      * @param idDestino fin de la ruta
-     * @return Resultado de ruta, una clase con el recorrido en lista y el tiempo que toma llevarlo a cabo
+     * @return Resultado de ruta, una clase con el recorrido en lista y el tiempo que toma llevarlo a cabo. null si no hay camino
+     * @throws IllegalArgumentException si alguna de las estaciones no existe
      */
     public ResultadoRuta calcularRuta(String idOrigen, String idDestino) {
         Estacion origen = grafo.buscarEstacion(idOrigen);
